@@ -1,3 +1,10 @@
+import { Stack } from '@mantine/core'
+import { HeaderComponent } from '../components/HeaderComponent.tsx'
+
 export function HomePage() {
-  return <h1>HomePage</h1>
+  return (
+    <Stack>
+      <HeaderComponent />
+    </Stack>
+  )
 }
