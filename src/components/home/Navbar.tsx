@@ -1,10 +1,12 @@
 import { Box, Flex, Text, Container } from '@mantine/core'
 import { menuLinks } from '../../constants/menuLinks.ts'
-import { Link } from 'react-router'
+import { Link, useLocation } from 'react-router'
 import logo from '../../assets/logos/logo.svg'
 import { RiPhoneFill } from '@remixicon/react'
 
 export const Navbar = () => {
+  const location = useLocation()
+  const currentPath = location.pathname
   return (
     <Container size="lg">
       <Flex
@@ -40,21 +42,24 @@ export const Navbar = () => {
           justify="center"
           style={{ flex: 1, minWidth: 240 }}
         >
-          {menuLinks.map((item) => (
-            <Link
-              key={item.title}
-              to={item.path}
-              style={{
-                textDecoration: 'none',
-                color: '#111',
-                fontWeight: 500,
-                fontSize: 15,
-                cursor: 'pointer',
-              }}
-            >
-              {item.title}
-            </Link>
-          ))}
+          {menuLinks.map((item) => {
+            const isActive = currentPath === item.path
+            return (
+              <Link
+                key={item.title}
+                to={item.path}
+                style={{
+                  textDecoration: 'none',
+                  color: '#111',
+                  fontWeight: isActive ? 700 : 500,
+                  fontSize: 15,
+                  cursor: 'pointer',
+                }}
+              >
+                {item.title}
+              </Link>
+            )
+          })}
         </Flex>
 
         <Box

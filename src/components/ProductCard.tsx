@@ -21,7 +21,7 @@ export const ProductCard = ({
         width: '100%',
         background: '#fff',
         borderRadius: 20,
-        padding: 24,
+        padding: 20,
         boxShadow: '0 6px 18px rgba(15, 23, 42, 0.06)',
         boxSizing: 'border-box',
       }}
