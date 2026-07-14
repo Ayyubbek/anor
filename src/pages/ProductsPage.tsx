@@ -1,5 +1,14 @@
-import { Button, Flex, Stack, Title } from '@mantine/core'
-import { ProductCard } from '../components/ProductCard.tsx'
+import { Button, Flex, Stack, Title, Box } from '@mantine/core'
+import { ProductCard } from '../components/ProductCard'
+
+const sample = [
+  { title: 'Mercedes', category: 'Sedan', price: '$25' },
+  { title: 'Mercedes', category: 'Sport', price: '$50' },
+  { title: 'Mercedes', category: 'Sedan', price: '$45' },
+  { title: 'Porsche', category: 'SUV', price: '$40' },
+  { title: 'Toyota', category: 'Sedan', price: '$35' },
+  { title: 'Porsche', category: 'SUV', price: '$50' },
+]
 
 export function ProductsPage() {
   return (
@@ -15,7 +24,23 @@ export function ProductsPage() {
         <Button variant={'light'}>Miscellaneous</Button>
       </Flex>
 
-      <ProductCard />
+      <Box
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+          gap: 24,
+        }}
+      >
+        {sample.map((p) => (
+          <Box key={p.title + p.price}>
+            <ProductCard
+              title={p.title}
+              category={p.category}
+              price={p.price}
+            />
+          </Box>
+        ))}
+      </Box>
     </Stack>
   )
 }

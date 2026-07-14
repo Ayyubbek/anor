@@ -3,22 +3,22 @@ import type { IMenuLinks } from '../types/menuLinks.ts'
 export const menuLinks: IMenuLinks[] = [
   {
     title: 'Home',
-    path: '/home',
+    path: '/',
   },
   {
-    title: 'Products',
-    path: '/products',
+    title: 'Vehicles',
+    path: '/vehicles',
   },
   {
     title: 'Details',
     path: '/details',
   },
   {
-    title: 'About us',
+    title: 'About Us',
     path: '/about',
   },
   {
-    title: 'Contact us',
+    title: 'Contact Us',
     path: '/contacts',
   },
 ]
