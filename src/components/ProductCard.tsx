@@ -1,4 +1,5 @@
 import { Box, Flex, Text } from '@mantine/core'
+import { useNavigate } from 'react-router'
 import carImg from '../assets/icons/carIcon.svg'
 import automatIcon from '../assets/icons/automat.svg'
 import pbIcon from '../assets/icons/pb.svg'
@@ -15,6 +16,27 @@ export const ProductCard = ({
   category = 'Sedan',
   price = '$25',
 }: ProductCardProps) => {
+  const navigate = useNavigate()
+
+  const handleViewDetails = () => {
+    navigate('/details', {
+      state: {
+        title,
+        category,
+        price,
+        specs: {
+          gearBox: 'Automat',
+          fuel: 'Petrol',
+          doors: 2,
+          airConditioner: 'Yes',
+          seats: 5,
+          distance: 500,
+        },
+        equipment: ['ABS', 'Air Bags', 'Cruise Control', 'Air Conditioner'],
+      },
+    })
+  }
+
   return (
     <Box
       style={{
@@ -98,6 +120,8 @@ export const ProductCard = ({
       </Flex>
 
       <button
+        type="button"
+        onClick={handleViewDetails}
         style={{
           width: '100%',
           background: '#A30041',

@@ -9,8 +9,11 @@ const carSamples = [
   { title: 'Toyota', category: 'Sedan', price: '$35' },
   { title: 'Porsche', category: 'SUV', price: '$50' },
 ]
-
-export const ProductsSection = () => {
+export const ProductsSection = ({
+  title = 'Choose the car that suits you',
+}: {
+  title?: string
+}) => {
   return (
     <Box style={{ padding: '64px 0', background: '#fff' }}>
       <Container size="lg">
@@ -29,7 +32,7 @@ export const ProductsSection = () => {
               width: '50%',
             }}
           >
-            Choose the car that suits you
+            {title}
           </Title>
           <Box
             style={{
