@@ -1,5 +1,16 @@
-import { Box, Button, Container, Flex, Stack, Text, Title } from '@mantine/core'
-import { useLocation } from 'react-router'
+import {
+  Alert,
+  Box,
+  Button,
+  Center,
+  Container,
+  Flex,
+  Loader,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core'
+import { useLocation, useParams } from 'react-router'
 import { Navbar } from '../components/home/Navbar'
 import { ProductsSection } from '../components/home/ProductsSection'
 import carImg from '../assets/icons/carIcon.svg'
@@ -8,12 +19,15 @@ import pbIcon from '../assets/icons/pb.svg'
 import airCIcon from '../assets/icons/airC.svg'
 import imgDetail from '../assets/images/ImgDetail.jpg'
 import { Footer } from '../components/home/Footer'
+import { useProductById } from '../hooks/useProducts'
 
 type DetailsState = {
-  title: string
-  category: string
-  price: string
-  specs: {
+  id?: number
+  title?: string
+  category?: string
+  price?: string
+  image?: string
+  specs?: {
     gearBox: string
     fuel: string
     doors: number
@@ -21,18 +35,26 @@ type DetailsState = {
     seats: number
     distance: number
   }
-  equipment: string[]
+  equipment?: string[]
 }
 
 export function DetailsPage() {
   const location = useLocation()
+  const params = useParams() as { id?: string }
   const state = location.state as DetailsState | null
+  const productId = params.id ?? state?.id?.toString()
 
-  const details: DetailsState = state ?? {
-    title: 'BMW',
-    category: 'SUV',
-    price: '$25',
-    specs: {
+  const { data: product, isLoading, isError, error } = useProductById(productId)
+
+  const details = {
+    title: product?.title ?? state?.title ?? 'BMW',
+    category: product?.category.name ?? state?.category ?? 'SUV',
+    price:
+      product?.price !== undefined
+        ? `$${product.price}`
+        : (state?.price ?? '$25'),
+    image: product?.images?.[0] ?? state?.image ?? carImg,
+    specs: state?.specs ?? {
       gearBox: 'Automat',
       fuel: 'Petrol',
       doors: 2,
@@ -40,7 +62,53 @@ export function DetailsPage() {
       seats: 5,
       distance: 500,
     },
-    equipment: ['ABS', 'Air Bags', 'Cruise Control', 'Air Conditioner'],
+    equipment: state?.equipment ?? [
+      'ABS',
+      'Air Bags',
+      'Cruise Control',
+      'Air Conditioner',
+    ],
+  }
+
+  if (!productId && !state) {
+    return (
+      <>
+        <Navbar />
+        <Container size="lg" style={{ paddingTop: 40, paddingBottom: 40 }}>
+          <Alert title="Product not found" color="red">
+            Product details cannot be loaded because the product ID is missing.
+          </Alert>
+        </Container>
+      </>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <>
+        <Navbar />
+        <Container size="lg" style={{ paddingTop: 40, paddingBottom: 40 }}>
+          <Center style={{ minHeight: 320 }}>
+            <Loader size="xl" />
+          </Center>
+        </Container>
+      </>
+    )
+  }
+
+  if (isError) {
+    return (
+      <>
+        <Navbar />
+        <Container size="lg" style={{ paddingTop: 40, paddingBottom: 40 }}>
+          <Alert title="Unable to load product" color="red">
+            {error instanceof Error
+              ? error.message
+              : 'An unexpected error occurred.'}
+          </Alert>
+        </Container>
+      </>
+    )
   }
 
   return (
@@ -91,8 +159,8 @@ export function DetailsPage() {
               }}
             >
               <img
-                src={carImg}
-                alt="car"
+                src={details.image}
+                alt={details.title}
                 style={{
                   width: '100%',
                   height: 300,

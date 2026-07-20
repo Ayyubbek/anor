@@ -63,6 +63,7 @@ export function ProductsPage() {
               {products.map((product) => (
                 <Box key={product.id}>
                   <ProductCard
+                    id={product.id}
                     title={product.title}
                     category={product.category.name}
                     price={`$${product.price}`}

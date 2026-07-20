@@ -1,11 +1,12 @@
 import { Box, Flex, Text } from '@mantine/core'
-import { useNavigate } from 'react-router'
+import { Link } from 'react-router'
 import carImg from '../assets/icons/carIcon.svg'
 import automatIcon from '../assets/icons/automat.svg'
 import pbIcon from '../assets/icons/pb.svg'
 import airCIcon from '../assets/icons/airC.svg'
 
 interface ProductCardProps {
+  id?: number
   title?: string
   category?: string
   price?: string
@@ -13,31 +14,28 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({
+  id,
   title = 'Mercedes',
   category = 'Sedan',
   price = '$25',
   image,
 }: ProductCardProps) => {
-  const navigate = useNavigate()
-
-  const handleViewDetails = () => {
-    navigate('/details', {
-      state: {
-        title,
-        category,
-        price,
-        image,
-        specs: {
-          gearBox: 'Automat',
-          fuel: 'Petrol',
-          doors: 2,
-          airConditioner: 'Yes',
-          seats: 5,
-          distance: 500,
-        },
-        equipment: ['ABS', 'Air Bags', 'Cruise Control', 'Air Conditioner'],
-      },
-    })
+  const path = id ? `/details/${id}` : '/details'
+  const state = {
+    id,
+    title,
+    category,
+    price,
+    image,
+    specs: {
+      gearBox: 'Automat',
+      fuel: 'Petrol',
+      doors: 2,
+      airConditioner: 'Yes',
+      seats: 5,
+      distance: 500,
+    },
+    equipment: ['ABS', 'Air Bags', 'Cruise Control', 'Air Conditioner'],
   }
 
   return (
@@ -131,24 +129,27 @@ export const ProductCard = ({
         </Flex>
       </Flex>
 
-      <button
-        type="button"
-        onClick={handleViewDetails}
+      <Link
+        to={path}
+        state={state}
         style={{
           width: '100%',
+          display: 'inline-flex',
+          justifyContent: 'center',
+          alignItems: 'center',
           background: '#A30041',
           color: '#fff',
           borderRadius: 12,
           padding: '10px 0',
           fontSize: 16,
           fontWeight: 600,
-          border: 'none',
+          textDecoration: 'none',
           cursor: 'pointer',
           textTransform: 'none',
         }}
       >
         View Details
-      </button>
+      </Link>
     </Box>
   )
 }
