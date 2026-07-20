@@ -9,12 +9,14 @@ interface ProductCardProps {
   title?: string
   category?: string
   price?: string
+  image?: string
 }
 
 export const ProductCard = ({
   title = 'Mercedes',
   category = 'Sedan',
   price = '$25',
+  image,
 }: ProductCardProps) => {
   const navigate = useNavigate()
 
@@ -24,6 +26,7 @@ export const ProductCard = ({
         title,
         category,
         price,
+        image,
         specs: {
           gearBox: 'Automat',
           fuel: 'Petrol',
@@ -59,8 +62,11 @@ export const ProductCard = ({
         }}
       >
         <img
-          src={carImg}
-          alt="car"
+          src={image || carImg}
+          alt={title}
+          onError={(e) => {
+            e.currentTarget.src = carImg
+          }}
           style={{
             width: '100%',
             height: 180,
@@ -79,7 +85,7 @@ export const ProductCard = ({
           <Text fw={700} style={{ fontSize: 18 }}>
             {title}
           </Text>
-          <Text size="sm" color="#666" style={{ fontSize: 14 }}>
+          <Text size="sm" c="dimmed" style={{ fontSize: 14 }}>
             {category}
           </Text>
         </Box>
@@ -88,7 +94,7 @@ export const ProductCard = ({
           <Text fw={700} style={{ color: '#A30041', fontSize: 18 }}>
             {price}
           </Text>
-          <Text size="xs" color="#999" style={{ fontSize: 12 }}>
+          <Text size="xs" c="dimmed" style={{ fontSize: 12 }}>
             per day
           </Text>
         </Box>
@@ -101,19 +107,25 @@ export const ProductCard = ({
             alt="automat"
             style={{ width: 18, height: 18 }}
           />
-          <Text size="xs" color="#666" style={{ fontSize: 14 }}>
+          <Text size="xs" c="dimmed" style={{ fontSize: 14 }}>
             Automat
           </Text>
         </Flex>
+
         <Flex align="center" gap={6}>
-          <img src={pbIcon} alt="pb" style={{ width: 18, height: 18 }} />
-          <Text size="xs" color="#666" style={{ fontSize: 14 }}>
+          <img src={pbIcon} alt="pb95" style={{ width: 18, height: 18 }} />
+          <Text size="xs" c="dimmed" style={{ fontSize: 14 }}>
             PB 95
           </Text>
         </Flex>
+
         <Flex align="center" gap={6}>
-          <img src={airCIcon} alt="air" style={{ width: 18, height: 18 }} />
-          <Text size="xs" color="#666" style={{ fontSize: 14 }}>
+          <img
+            src={airCIcon}
+            alt="air-conditioner"
+            style={{ width: 18, height: 18 }}
+          />
+          <Text size="xs" c="dimmed" style={{ fontSize: 14 }}>
             Air Conditioner
           </Text>
         </Flex>

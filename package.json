@@ -20,6 +20,7 @@
     "@mantine/notifications": "^9.4.1",
     "@remixicon/react": "^4.9.0",
     "@tanstack/react-query": "^5.101.2",
+    "axios": "^1.18.1",
     "dayjs": "^1.11.21",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tanstack/react-query-devtools": "^5.101.2",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

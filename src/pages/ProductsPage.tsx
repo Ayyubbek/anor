@@ -5,26 +5,18 @@ import { ProductCard } from '../components/ProductCard'
 import { Navbar } from '../components/home/Navbar'
 import Brands from '../components/Brands'
 import { Footer } from '../components/home/Footer'
-
-const sample = [
-  { title: 'Mercedes', category: 'Sedan', price: '$25' },
-  { title: 'Mercedes', category: 'Sport', price: '$50' },
-  { title: 'Mercedes', category: 'Sedan', price: '$45' },
-  { title: 'Porsche', category: 'SUV', price: '$40' },
-  { title: 'Toyota', category: 'Sedan', price: '$35' },
-  { title: 'Porsche', category: 'SUV', price: '$50' },
-  { title: 'Mercedes', category: 'Van', price: '$50' },
-  { title: 'Toyota', category: 'Sport', price: '$60' },
-  { title: 'Maybach', category: 'Sedan', price: '$70' },
-]
+import { useProducts } from '../hooks/useProducts'
 
 export function ProductsPage() {
   const [activeFilter, setActiveFilter] = useState('All vehicles')
+  const { data, isLoading, isError } = useProducts()
+
   return (
     <>
       <Navbar />
+
       <Container size="lg">
-        <Stack py={'lg'}>
+        <Stack py="lg">
           <Box style={{ textAlign: 'center' }}>
             <Title style={{ marginBottom: 18 }} order={2}>
               Select a vehicle group
@@ -58,19 +50,28 @@ export function ProductsPage() {
               gap: 24,
             }}
           >
-            {sample.map((p) => (
-              <Box key={p.title + p.price}>
-                <ProductCard
-                  title={p.title}
-                  category={p.category}
-                  price={p.price}
-                />
-              </Box>
-            ))}
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : isError ? (
+              <p>Error loading products</p>
+            ) : (
+              data?.map((p) => (
+                <Box key={p.id}>
+                  <ProductCard
+                    title={p.title}
+                    category={p.category.name}
+                    price={`$${p.price}`}
+                    image={p.images?.[0]}
+                  />
+                </Box>
+              ))
+            )}
           </Box>
+
           <Brands />
         </Stack>
       </Container>
+
       <Footer />
     </>
   )
