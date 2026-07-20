@@ -130,7 +130,7 @@ export function DetailsPage() {
           </Box>
 
           <Stack
-            spacing={24}
+            gap={24}
             style={{ flex: '1 1 360px', minWidth: 320, display: 'flex' }}
           >
             <Box style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
