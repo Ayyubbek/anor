@@ -40,7 +40,7 @@ export const ProductFilter = () => {
   const availableCategories =
     categories?.filter((category) => category.name !== 'New Category') ?? []
   const selectedCategory = availableCategories.find(
-    (category) => String(category.id) === activeCategory,
+    (category) => String(category.id) === activeCategory
   )
   const firstCategories = availableCategories.slice(0, VISIBLE_CATEGORIES_COUNT)
   const visibleCategories = isCategoriesExpanded
@@ -54,27 +54,15 @@ export const ProductFilter = () => {
 
   useEffect(() => {
     setSearchParams({ key: 'search', value: debouncedSearch })
-  }, [debouncedSearch])
+  }, [debouncedSearch, setSearchParams])
 
   useEffect(() => {
     setSearchParams({ key: 'price_min', value: debouncedMinPrice })
-  }, [debouncedMinPrice])
+  }, [debouncedMinPrice, setSearchParams])
 
   useEffect(() => {
     setSearchParams({ key: 'price_max', value: debouncedMaxPrice })
-  }, [debouncedMaxPrice])
-
-  useEffect(() => {
-    setSearchValue(searchParams.search ?? '')
-  }, [searchParams.search])
-
-  useEffect(() => {
-    setMinPrice(searchParams.price_min ?? '')
-  }, [searchParams.price_min])
-
-  useEffect(() => {
-    setMaxPrice(searchParams.price_max ?? '')
-  }, [searchParams.price_max])
+  }, [debouncedMaxPrice, setSearchParams])
 
   const onCategoryClick = (categoryId: string) => {
     setSearchParams({ key: 'categoryId', value: categoryId })

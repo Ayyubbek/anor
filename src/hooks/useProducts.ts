@@ -13,7 +13,6 @@ export const useProducts = (params?: TProductParams) => {
   const start = (current - 1) * limit
 
   return useQuery({
-
     queryKey: [PRODUCTS_KEY, filters],
 
     queryFn: () => productsApi.get(filters).then((resp) => resp.data),
