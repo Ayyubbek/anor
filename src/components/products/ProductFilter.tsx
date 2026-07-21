@@ -63,7 +63,7 @@ export const ProductFilter = () => {
   const visibleCategories = isCategoriesExpanded
     ? availableCategories
     : selectedCategory &&
-        !firstCategories.some((category) => category.id === selectedCategory.id)
+      !firstCategories.some((category) => category.id === selectedCategory.id)
       ? [...firstCategories, selectedCategory]
       : firstCategories
   const hasHiddenCategories =
