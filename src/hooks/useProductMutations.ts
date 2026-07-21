@@ -9,8 +9,10 @@ export const useCreateProduct = () => {
   return useMutation({
     mutationFn: (data: IProductForm) =>
       productsApi.create(data).then((resp) => resp.data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [PRODUCTS_KEY] })
+    onSuccess: (created: IProduct) => {
+      queryClient.setQueryData<IProduct[]>([PRODUCTS_KEY], (oldData) =>
+        oldData ? [created, ...oldData] : [created]
+      )
     },
   })
 }

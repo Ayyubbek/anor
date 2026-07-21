@@ -1,10 +1,59 @@
 import { Box, Button, Flex, Text } from '@mantine/core'
 import { Link } from 'react-router'
-import { useState } from 'react'
+import { modals } from '@mantine/modals'
+import { notifications } from '@mantine/notifications'
+import { useDeleteProduct } from '../hooks/useProductMutations'
+import { CreateProductForm } from './products/CreateProductForm'
+import type { IProductForm } from '../types/product'
 import carImg from '../assets/icons/carIcon.svg'
 import automatIcon from '../assets/icons/automat.svg'
 import pbIcon from '../assets/icons/pb.svg'
 import airCIcon from '../assets/icons/airC.svg'
+
+// Brand color constants
+const PRIMARY_COLOR = '#A30041'
+const PRIMARY_HOVER_COLOR = '#7a0033'
+
+// Reusable button styles
+const primaryButtonStyles = {
+  root: {
+    backgroundColor: PRIMARY_COLOR,
+    minHeight: 44,
+    transition: 'background-color 150ms ease, transform 150ms ease',
+    '&:hover': {
+      backgroundColor: PRIMARY_HOVER_COLOR,
+    },
+  },
+  label: {
+    fontWeight: 600,
+    textTransform: 'none',
+  },
+}
+
+const deleteButtonStyles = {
+  root: {
+    borderColor: PRIMARY_COLOR,
+    transition:
+      'background-color 150ms ease, border-color 150ms ease, color 150ms ease',
+    '&:hover:not(:disabled)': {
+      backgroundColor: `rgba(163, 0, 65, 0.06)`,
+    },
+  },
+  label: {
+    fontWeight: 600,
+    textTransform: 'none',
+  },
+}
+
+const editButtonStyles = {
+  root: {
+    transition: 'background-color 150ms ease, border-color 150ms ease',
+  },
+  label: {
+    fontWeight: 600,
+    textTransform: 'none',
+  },
+}
 
 interface ProductCardProps {
   id?: number
@@ -22,7 +71,92 @@ export const ProductCard = ({
   image,
 }: ProductCardProps) => {
   const path = id ? `/details/${id}` : '/details'
-  const [isHovered, setIsHovered] = useState(false)
+  const { mutate: deleteProduct, isPending: isDeleting } = useDeleteProduct()
+
+  const handleDeleteClick = () => {
+    if (!id) {
+      notifications.show({
+        title: 'Error',
+        message: 'Cannot delete product without ID',
+        color: 'red',
+      })
+      return
+    }
+
+    modals.openConfirmModal({
+      title: 'Delete Product',
+      children: (
+        <Box>
+          <Text size="sm">
+            Are you sure you want to delete product{' '}
+            <Text span fw={700} c={PRIMARY_COLOR}>
+              "{title}"
+            </Text>
+            ?
+          </Text>
+        </Box>
+      ),
+      labels: { confirm: 'Delete', cancel: 'Cancel' },
+      confirmProps: { color: 'red' },
+      onConfirm: () => {
+        deleteProduct(id, {
+          onSuccess: () => {
+            notifications.show({
+              title: 'Success',
+              message: 'Product deleted successfully',
+              color: 'green',
+            })
+          },
+          onError: (error) => {
+            notifications.show({
+              title: 'Error',
+              message:
+                error instanceof Error
+                  ? error.message
+                  : 'Failed to delete product',
+              color: 'red',
+            })
+          },
+        })
+      },
+    })
+  }
+
+  const handleEditClick = () => {
+    if (!id) {
+      notifications.show({
+        title: 'Error',
+        message: 'Cannot edit product without ID',
+        color: 'red',
+      })
+      return
+    }
+
+    // Build initialValues from ProductCard props
+    const priceNumber = parseFloat(price?.replace('$', '') || '0')
+    const initialValues: IProductForm = {
+      title: title || '',
+      price: isNaN(priceNumber) ? 0 : priceNumber,
+      description: '',
+      categoryId: 1, // Default until real category ids are available
+      images: image ? [image] : ['https://placehold.co/600x400'],
+    }
+
+    const modalId = modals.open({
+      title: 'Edit Product',
+      children: (
+        <CreateProductForm
+          mode="edit"
+          productId={id}
+          initialValues={initialValues}
+          onSuccess={() => modals.close(modalId)}
+        />
+      ),
+      size: 'lg',
+      radius: 'md',
+    })
+  }
+
   const state = {
     id,
     title,
@@ -42,22 +176,25 @@ export const ProductCard = ({
 
   return (
     <Box
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       style={{
         width: '100%',
         background: '#fff',
         borderRadius: 20,
         padding: 20,
-        boxShadow: isHovered
-          ? '0 10px 25px rgba(15, 23, 42, 0.12)'
-          : '0 6px 18px rgba(15, 23, 42, 0.06)',
-        transform: isHovered ? 'translateY(-4px)' : 'none',
+        boxShadow: '0 6px 18px rgba(15, 23, 42, 0.06)',
         transition: 'transform 150ms ease, box-shadow 150ms ease',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100%',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.boxShadow = '0 10px 25px rgba(15, 23, 42, 0.12)'
+        e.currentTarget.style.transform = 'translateY(-4px)'
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.boxShadow = '0 6px 18px rgba(15, 23, 42, 0.06)'
+        e.currentTarget.style.transform = 'none'
       }}
     >
       <Box
@@ -117,7 +254,7 @@ export const ProductCard = ({
         </Box>
 
         <Box style={{ textAlign: 'right' }}>
-          <Text fw={700} style={{ color: '#A30041', fontSize: 18 }}>
+          <Text fw={700} style={{ color: PRIMARY_COLOR, fontSize: 18 }}>
             {price}
           </Text>
           <Text size="xs" c="dimmed" style={{ fontSize: 12 }}>
@@ -164,24 +301,38 @@ export const ProductCard = ({
         fullWidth
         radius="xl"
         size="md"
-        styles={{
-          root: {
-            backgroundColor: '#A30041',
-            minHeight: 44,
-            transition: 'background-color 150ms ease, transform 150ms ease',
-            '&:hover': {
-              backgroundColor: '#7a0033',
-            },
-          },
-          label: {
-            fontWeight: 600,
-            textTransform: 'none',
-          },
-        }}
+        styles={primaryButtonStyles}
         style={{ marginTop: 'auto' }}
       >
         View Details
       </Button>
+
+      <Flex gap={12} style={{ marginTop: 16 }}>
+        <Button
+          flex={1}
+          radius="xl"
+          size="md"
+          variant="default"
+          onClick={handleEditClick}
+          styles={editButtonStyles}
+        >
+          Edit
+        </Button>
+
+        <Button
+          flex={1}
+          radius="xl"
+          size="md"
+          variant="outline"
+          color="red"
+          onClick={handleDeleteClick}
+          loading={isDeleting}
+          disabled={isDeleting}
+          styles={deleteButtonStyles}
+        >
+          Delete
+        </Button>
+      </Flex>
     </Box>
   )
 }

@@ -9,16 +9,41 @@ import {
 import { useForm } from '@mantine/form'
 import { notifications } from '@mantine/notifications'
 import { useCategories } from '../../hooks/useProducts'
-import { useCreateProduct } from '../../hooks/useProductMutations'
+import {
+  useCreateProduct,
+  useUpdateProduct,
+} from '../../hooks/useProductMutations'
 import type { IProductForm } from '../../types/product'
 
 interface ICreateProductFormProps {
   onSuccess?: () => void
+  initialValues?: IProductForm
+  mode?: 'create' | 'edit'
+  productId?: number
 }
 
-export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
+const defaultFormValues: IProductForm = {
+  title: '',
+  price: 0,
+  description: '',
+  categoryId: 0,
+  images: ['https://placehold.co/600x400'],
+}
+
+export const CreateProductForm = ({
+  onSuccess,
+  initialValues,
+  mode = 'create',
+  productId,
+}: ICreateProductFormProps) => {
   const { data: categories } = useCategories()
-  const { mutate, isPending } = useCreateProduct()
+  const createMutation = useCreateProduct()
+  const updateMutation = useUpdateProduct()
+
+  const isEditMode = mode === 'edit'
+  const isPending = isEditMode
+    ? updateMutation.isPending
+    : createMutation.isPending
 
   const fieldStyles = {
     input: {
@@ -38,13 +63,7 @@ export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
   }
 
   const form = useForm<IProductForm>({
-    initialValues: {
-      title: '',
-      price: 0,
-      description: '',
-      categoryId: 0,
-      images: ['https://placehold.co/600x400'],
-    },
+    initialValues: initialValues || defaultFormValues,
 
     validate: {
       title: (value) => (value.trim().length < 3 ? 'Минимум 3 символа' : null),
@@ -56,19 +75,53 @@ export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
   })
 
   const handleSubmit = (values: IProductForm) => {
-    mutate(values, {
-      onSuccess: () => {
-        notifications.show({ message: 'Товар создан', color: 'green' })
-        form.reset()
-        onSuccess?.()
-      },
-      onError: (error) => {
-        notifications.show({
-          message: error instanceof Error ? error.message : 'Ошибка',
-          color: 'red',
-        })
-      },
-    })
+    if (isEditMode && productId) {
+      updateMutation.mutate(
+        { id: productId, data: values },
+        {
+          onSuccess: () => {
+            notifications.show({
+              title: 'Success',
+              message: 'Product updated successfully',
+              color: 'green',
+            })
+            onSuccess?.()
+          },
+          onError: (error) => {
+            notifications.show({
+              title: 'Error',
+              message:
+                error instanceof Error
+                  ? error.message
+                  : 'Failed to update product',
+              color: 'red',
+            })
+          },
+        }
+      )
+    } else {
+      createMutation.mutate(values, {
+        onSuccess: () => {
+          notifications.show({
+            title: 'Success',
+            message: 'Product created successfully',
+            color: 'green',
+          })
+          form.reset()
+          onSuccess?.()
+        },
+        onError: (error) => {
+          notifications.show({
+            title: 'Error',
+            message:
+              error instanceof Error
+                ? error.message
+                : 'Failed to create product',
+            color: 'red',
+          })
+        },
+      })
+    }
   }
 
   return (
@@ -145,7 +198,7 @@ export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
             },
           }}
         >
-          Создать товар
+          {isEditMode ? 'Save Changes' : 'Create Product'}
         </Button>
       </Stack>
     </form>
