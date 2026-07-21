@@ -1,4 +1,9 @@
-import type { ICategory, IProduct, TProductParams } from '../types/product'
+import type {
+  ICategory,
+  IProduct,
+  IProductForm,
+  TProductParams,
+} from '../types/product'
 import { $api } from './api'
 
 const baseURL = '/products'
@@ -8,12 +13,15 @@ export const productsApi = {
 
   getById: (id: IProduct['id']) => $api.get<IProduct>(`${baseURL}/${id}`),
 
-  create: (data: Partial<IProduct>) => $api.post<IProduct>(baseURL, data),
+  // POST /products — создать
+  create: (data: IProductForm) => $api.post<IProduct>(baseURL, data),
 
-  update: (id: IProduct['id'], data: Partial<IProduct>) =>
+  // PUT /products/:id — изменить целиком (частичный payload допустим)
+  update: (id: IProduct['id'], data: Partial<IProductForm>) =>
     $api.put<IProduct>(`${baseURL}/${id}`, data),
 
-  delete: (id: IProduct['id']) => $api.delete(`${baseURL}/${id}`),
+  // DELETE /products/:id — удалить
+  delete: (id: IProduct['id']) => $api.delete<boolean>(`${baseURL}/${id}`),
 }
 
 export const categoriesApi = {

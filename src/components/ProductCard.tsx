@@ -1,5 +1,6 @@
-import { Box, Flex, Text } from '@mantine/core'
+import { Box, Button, Flex, Text } from '@mantine/core'
 import { Link } from 'react-router'
+import { useState } from 'react'
 import carImg from '../assets/icons/carIcon.svg'
 import automatIcon from '../assets/icons/automat.svg'
 import pbIcon from '../assets/icons/pb.svg'
@@ -21,6 +22,7 @@ export const ProductCard = ({
   image,
 }: ProductCardProps) => {
   const path = id ? `/details/${id}` : '/details'
+  const [isHovered, setIsHovered] = useState(false)
   const state = {
     id,
     title,
@@ -40,13 +42,22 @@ export const ProductCard = ({
 
   return (
     <Box
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         width: '100%',
         background: '#fff',
         borderRadius: 20,
         padding: 20,
-        boxShadow: '0 6px 18px rgba(15, 23, 42, 0.06)',
+        boxShadow: isHovered
+          ? '0 10px 25px rgba(15, 23, 42, 0.12)'
+          : '0 6px 18px rgba(15, 23, 42, 0.06)',
+        transform: isHovered ? 'translateY(-4px)' : 'none',
+        transition: 'transform 150ms ease, box-shadow 150ms ease',
         boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100%',
       }}
     >
       <Box
@@ -76,14 +87,31 @@ export const ProductCard = ({
 
       <Flex
         justify="space-between"
-        align="center"
+        align="flex-start"
         style={{ marginTop: 16, marginBottom: 16 }}
       >
-        <Box>
-          <Text fw={700} style={{ fontSize: 18 }}>
+        <Box
+          style={{
+            minHeight: 52,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Text
+            fw={700}
+            style={{
+              fontSize: 18,
+              lineHeight: '24px',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            }}
+          >
             {title}
           </Text>
-          <Text size="sm" c="dimmed" style={{ fontSize: 14 }}>
+          <Text size="sm" c="dimmed" style={{ fontSize: 14, marginTop: 8 }}>
             {category}
           </Text>
         </Box>
@@ -129,27 +157,31 @@ export const ProductCard = ({
         </Flex>
       </Flex>
 
-      <Link
+      <Button
+        component={Link}
         to={path}
         state={state}
-        style={{
-          width: '100%',
-          display: 'inline-flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          background: '#A30041',
-          color: '#fff',
-          borderRadius: 12,
-          padding: '10px 0',
-          fontSize: 16,
-          fontWeight: 600,
-          textDecoration: 'none',
-          cursor: 'pointer',
-          textTransform: 'none',
+        fullWidth
+        radius="xl"
+        size="md"
+        styles={{
+          root: {
+            backgroundColor: '#A30041',
+            minHeight: 44,
+            transition: 'background-color 150ms ease, transform 150ms ease',
+            '&:hover': {
+              backgroundColor: '#7a0033',
+            },
+          },
+          label: {
+            fontWeight: 600,
+            textTransform: 'none',
+          },
         }}
+        style={{ marginTop: 'auto' }}
       >
         View Details
-      </Link>
+      </Button>
     </Box>
   )
 }
