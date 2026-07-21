@@ -25,7 +25,8 @@ const categoryButtonStyles = (isActive = false) => ({
     borderColor: isActive ? PRIMARY_COLOR : '#d9d9d9',
     backgroundColor: isActive ? PRIMARY_COLOR : '#fff',
     color: isActive ? '#fff' : '#000',
-    transition: 'background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease',
+    transition:
+      'background-color 150ms ease, color 150ms ease, border-color 150ms ease, transform 150ms ease',
     '&:hover': {
       backgroundColor: isActive ? PRIMARY_HOVER : '#f5f5f5',
     },
@@ -120,7 +121,9 @@ export const ProductFilter = () => {
               }
               color="red"
               onClick={() => onCategoryClick(String(category.id))}
-              styles={categoryButtonStyles(activeCategory === String(category.id))}
+              styles={categoryButtonStyles(
+                activeCategory === String(category.id)
+              )}
             >
               {category.name}
             </Button>
@@ -208,7 +211,8 @@ export const ProductFilter = () => {
                 root: {
                   borderColor: PRIMARY_COLOR,
                   color: PRIMARY_COLOR,
-                  transition: 'background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease',
+                  transition:
+                    'background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease',
                   '&:hover': {
                     backgroundColor: 'rgba(163, 0, 65, 0.06)',
                   },
