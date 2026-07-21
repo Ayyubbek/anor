@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Divider,
+  Flex,
   Group,
   NumberInput,
   Paper,
@@ -144,61 +145,54 @@ export const ProductFilter = () => {
         <Divider my="md" />
 
         <Box>
-          <Group
-            align="end"
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 12,
-              alignItems: 'flex-end',
-            }}
-          >
-            <TextInput
-              size="md"
-              radius="xl"
-              placeholder="Поиск по названию"
-              leftSection={<RiSearchLine size={16} />}
-              value={searchValue}
-              onChange={(event) => setSearchValue(event.currentTarget.value)}
-              styles={{ input: { minHeight: 44 } }}
-              style={{
-                flex: '2 1 360px',
-                minWidth: 240,
-                width: '100%',
-              }}
-            />
+          <Flex gap="md" align="flex-end" wrap={{ base: 'wrap', md: 'nowrap' }}>
+            <Box flex={2}>
+              <TextInput
+                size="md"
+                radius="xl"
+                placeholder="Поиск по названию"
+                leftSection={<RiSearchLine size={16} />}
+                value={searchValue}
+                onChange={(event) => setSearchValue(event.currentTarget.value)}
+                styles={{
+                  input: {
+                    minHeight: 44,
+                  },
+                }}
+              />
+            </Box>
 
-            <NumberInput
-              size="md"
-              radius="xl"
-              label="Minimum Price"
-              placeholder="Minimum Price"
-              min={0}
-              value={minPrice}
-              onChange={(value) => setMinPrice(value.toString())}
-              styles={{ input: { minHeight: 44 } }}
-              style={{
-                flex: '1 1 180px',
-                minWidth: 180,
-                width: '100%',
-              }}
-            />
+            <Box flex={1}>
+              <NumberInput
+                size="md"
+                radius="xl"
+                placeholder="Minimum Price"
+                min={0}
+                value={minPrice}
+                onChange={(value) => setMinPrice(String(value ?? ''))}
+                styles={{
+                  input: {
+                    minHeight: 44,
+                  },
+                }}
+              />
+            </Box>
 
-            <NumberInput
-              size="md"
-              radius="xl"
-              label="Maximum Price"
-              placeholder="Maximum Price"
-              min={0}
-              value={maxPrice}
-              onChange={(value) => setMaxPrice(value.toString())}
-              styles={{ input: { minHeight: 44 } }}
-              style={{
-                flex: '1 1 180px',
-                minWidth: 180,
-                width: '100%',
-              }}
-            />
+            <Box flex={1}>
+              <NumberInput
+                size="md"
+                radius="xl"
+                placeholder="Maximum Price"
+                min={0}
+                value={maxPrice}
+                onChange={(value) => setMaxPrice(String(value ?? ''))}
+                styles={{
+                  input: {
+                    minHeight: 44,
+                  },
+                }}
+              />
+            </Box>
 
             <Button
               size="md"
@@ -211,27 +205,22 @@ export const ProductFilter = () => {
                 root: {
                   borderColor: PRIMARY_COLOR,
                   color: PRIMARY_COLOR,
+                  minWidth: 170,
+                  height: 44,
                   transition:
-                    'background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease',
+                    'background-color 150ms ease, border-color 150ms ease, color 150ms ease',
                   '&:hover': {
-                    backgroundColor: 'rgba(163, 0, 65, 0.06)',
+                    backgroundColor: 'rgba(163,0,65,.06)',
                   },
                 },
                 label: {
                   fontWeight: 600,
                 },
               }}
-              style={{
-                flex: '0 0 auto',
-                minHeight: 44,
-                height: 44,
-                width: '100%',
-                maxWidth: 180,
-              }}
             >
               Сбросить
             </Button>
-          </Group>
+          </Flex>
         </Box>
       </Box>
     </Paper>
