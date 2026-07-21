@@ -7,6 +7,8 @@ export const CreateProductButton = () => {
     const id = modals.open({
       title: 'Новый товар',
       children: <CreateProductForm onSuccess={() => modals.close(id)} />,
+      radius: 'md',
+      size: 'lg',
     })
 
     return id

@@ -20,6 +20,23 @@ export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
   const { data: categories } = useCategories()
   const { mutate, isPending } = useCreateProduct()
 
+  const fieldStyles = {
+    input: {
+      minHeight: 44,
+      borderRadius: 24,
+      transition: 'box-shadow 150ms ease, border-color 150ms ease',
+    },
+    label: {
+      fontSize: 14,
+      fontWeight: 600,
+    },
+    error: {
+      fontSize: 12,
+      lineHeight: 1.4,
+      marginTop: 4,
+    },
+  }
+
   const form = useForm<IProductForm>({
     initialValues: {
       title: '',
@@ -56,34 +73,46 @@ export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
 
   return (
     <form onSubmit={form.onSubmit(handleSubmit)}>
-      <Stack>
+      <Stack gap={20}>
         <TextInput
           label="Название"
           placeholder="Например, iPhone 15"
+          size="md"
+          radius="xl"
           withAsterisk
+          styles={fieldStyles}
           {...form.getInputProps('title')}
         />
 
         <NumberInput
           label="Цена"
           placeholder="0"
+          size="md"
+          radius="xl"
           min={0}
           withAsterisk
+          styles={fieldStyles}
           {...form.getInputProps('price')}
         />
 
         <Textarea
           label="Описание"
           placeholder="Пара слов о товаре"
+          size="md"
+          radius="xl"
           minRows={3}
           withAsterisk
+          styles={fieldStyles}
           {...form.getInputProps('description')}
         />
 
         <Select
           label="Категория"
           placeholder="Выберите"
+          size="md"
+          radius="xl"
           withAsterisk
+          styles={fieldStyles}
           data={
             categories?.map((c) => ({
               value: String(c.id),
@@ -95,7 +124,27 @@ export const CreateProductForm = ({ onSuccess }: ICreateProductFormProps) => {
           error={form.errors.categoryId}
         />
 
-        <Button type="submit" loading={isPending}>
+        <Button
+          type="submit"
+          loading={isPending}
+          fullWidth
+          size="md"
+          radius="xl"
+          color="red"
+          styles={{
+            root: {
+              backgroundColor: '#A30041',
+              borderColor: '#A30041',
+              transition: 'background-color 150ms ease, transform 150ms ease',
+              '&:hover': {
+                backgroundColor: '#7a0033',
+              },
+            },
+            label: {
+              fontWeight: 600,
+            },
+          }}
+        >
           Создать товар
         </Button>
       </Stack>
